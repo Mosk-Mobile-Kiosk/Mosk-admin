@@ -5,11 +5,7 @@ import { Route, Routes } from "react-router-dom"
 import Router from "./routes/Router"
 
 function App() {
-  return (
-    <div>
-      <Router />
-    </div>
-  )
+  return <Router />
 }
 
 export default App
