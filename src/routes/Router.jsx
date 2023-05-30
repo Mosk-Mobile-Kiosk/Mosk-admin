@@ -5,11 +5,15 @@ import Home from "../pages/dashboard/home"
 import Team from "../components/dashContent/team"
 import Inovices from "../components/dashContent/inovices"
 import DashBoard from "../components/dashContent/dashboard"
+import RegisterPage from "../pages/login/registerPage"
+import StorePage from "../pages/login/storeRegisterPage"
 
 function Router() {
   return (
     <Routes>
       <Route path="/" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
+      <Route path="/storeRegister" element={<StorePage />} />
       <Route path=":home/" element={<Home />}>
         <Route path="dashboard" element={<DashBoard />} />
         <Route path="inovices" element={<Inovices />} />

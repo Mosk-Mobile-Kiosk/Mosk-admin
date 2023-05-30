@@ -42,7 +42,7 @@ function RegisterForm() {
         />
 
         <Button type="button" fullWidth variant="contained" sx={{ mt: 2, mb: 2 }} style={{ height: "50px" }}>
-          <Link to="/register/store" style={{ color: "white" }}>
+          <Link to="/storeRegister" style={{ color: "white" }}>
             다음단계 (가게 정보 등록)
           </Link>
         </Button>

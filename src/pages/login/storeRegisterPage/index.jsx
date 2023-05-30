@@ -1,7 +1,7 @@
 import React from "react"
-import { Container } from "react-bootstrap"
 import Logo from "../../../components/common/logo"
 import StoreRegisterForm from "../../../components/user/storeRegister"
+import { Container } from "@mui/material"
 
 function StorePage() {
   return (
