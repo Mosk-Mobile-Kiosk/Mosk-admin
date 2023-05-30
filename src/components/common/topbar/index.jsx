@@ -20,10 +20,10 @@ const Topbar = () => {
     <Box display="flex" justifyContent="space-between" p={2}>
       {/* Search Box */}
       <Box display="flex" backgroundColor={colors.primary[400]} borderRadius="3px">
-        {/* <InputBase sx={{ ml: 2, flex: 1 }} placeholder="search" />
+        <InputBase sx={{ ml: 2, flex: 1 }} placeholder="search" />
         <IconButton type="button" sx={{ p: 1 }}>
           <SearchIcon />
-        </IconButton> */}
+        </IconButton>
       </Box>
 
       <Box>
