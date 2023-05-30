@@ -1,10 +1,13 @@
+import { Box } from "@mui/material"
 import React from "react"
 
 function Inovices() {
   return (
-    <div>
-      <img src="/img/logo.png" size={50} />
-    </div>
+    <Box m="20px">
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Header title="INOVICES " subtitle="Welcome to your dashboard" />
+      </Box>
+    </Box>
   )
 }
 
