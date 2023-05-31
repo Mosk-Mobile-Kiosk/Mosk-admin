@@ -145,14 +145,14 @@ const Sidebar = () => {
 
             <Item
               title="정보 수정"
-              to="#"
+              to="form"
               icon={<PersonOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Calendar"
-              to="/calendar"
+              to="calendar"
               icon={<CalendarTodayOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
