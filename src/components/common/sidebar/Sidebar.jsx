@@ -110,7 +110,7 @@ const Sidebar = () => {
           <Box paddingLeft={isCollapsed ? undefined : "10%"}>
             <Item
               title="DashBoard"
-              to="dashboard"
+              to="/home"
               icon={<HomeOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
@@ -159,7 +159,7 @@ const Sidebar = () => {
             />
             <Item
               title="FAQ page"
-              to="/faq"
+              to="/home"
               icon={<HelpOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
@@ -167,18 +167,30 @@ const Sidebar = () => {
             <Typography variant="h6" color={colors.grey[300]} sx={{ m: "15px 0 15px 20px" }}>
               Chart
             </Typography>
-
+            <Item
+              title="Bar Chart"
+              to="bar"
+              icon={<BarChartOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
             <Item
               title="Pie Chart "
-              to="/pie"
+              to="pie"
               icon={<PieChartOutlineOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
-            <Item title="판매량" to="#" icon={<TimelineOutlinedIcon />} selected={selected} setSelected={setSelected} />
+            <Item
+              title="판매량"
+              to="line"
+              icon={<TimelineOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
             <Item
               title="Geography Chart"
-              to="/geography"
+              to="geo"
               icon={<MapOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}

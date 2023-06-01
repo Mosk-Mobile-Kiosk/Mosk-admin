@@ -10,6 +10,10 @@ import StorePage from "../pages/login/storeRegisterPage"
 import Contacts from "../components/dashContent/contacts"
 import Form from "../components/dashContent/form"
 import Calendar from "../components/dashContent/calendar"
+import Bar from "../components/dashContent/bar"
+import Pie from "../components/dashContent/pie"
+import Line from "../components/dashContent/line"
+import Geo from "../components/dashContent/geo"
 
 function Router() {
   return (
@@ -25,6 +29,10 @@ function Router() {
         <Route path="invoices" element={<Inovices />} />
         <Route path="form" element={<Form />} />
         <Route path="calendar" element={<Calendar />} />
+        <Route path="bar" element={<Bar />} />
+        <Route path="pie" element={<Pie />} />
+        <Route path="line" element={<Line />} />
+        <Route path="geo" element={<Geo />} />
       </Route>
     </Routes>
   )
