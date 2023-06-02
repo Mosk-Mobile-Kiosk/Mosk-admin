@@ -1,5 +1,7 @@
 import React, { useState } from "react"
 import { Box, Button, Container, Grid, TextField, Typography } from "@mui/material"
+import { IconButton, InputAdornment } from "@mui/material"
+import { Visibility, VisibilityOff } from "@mui/icons-material"
 import { useNavigate } from "react-router-dom"
 
 function RegisterForm() {
@@ -7,17 +9,15 @@ function RegisterForm() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
+  const [passwordError, setPasswordError] = useState("")
+  const [passwordVisible, setPasswordVisible] = useState(false)
+  const [phoneNumber, setPhoneNumber] = useState("")
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value)
   }
-
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value)
-  }
-
-  const handleConfirmPasswordChange = (e) => {
-    setConfirmPassword(e.target.value)
+  const handleClickShowPassword = () => {
+    setPasswordVisible(!passwordVisible)
   }
 
   const handleDuplicateCheck = async () => {
@@ -46,13 +46,59 @@ function RegisterForm() {
       // 응답 코드에 따라 처리
       if (response.ok) {
         // 중복되지 않은 이메일인 경우
-        console.log("사용 가능한 이메일입니다.")
+        const confirmUseEmail = confirm("사용 가능한 이메일입니다. 사용하시겠습니까?")
+        if (confirmUseEmail) {
+          emailInput.disabled = true // 이메일 입력 칸 비활성화
+          console.log("이메일 사용을 진행합니다.")
+        } else {
+          console.log("이메일 사용을 취소했습니다.")
+        }
       } else {
         // 중복된 이메일인 경우
         console.log("이미 사용 중인 이메일입니다.")
       }
     } catch (error) {
       console.error("오류 발생:", error)
+    }
+  }
+
+  const handlePhoneNumberChange = (event) => {
+    // 입력된 값에서 하이픈 제거
+    const formattedPhoneNumber = event.target.value.replace(/-/g, "")
+    // 휴대폰 번호 업데이트
+    setPhoneNumber(formattedPhoneNumber)
+  }
+
+  // const handleSubmit = () => {
+  //   // 비밀번호 유효성 검사
+  //   const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,20}$/
+  //   if (!passwordRegex.test(password)) {
+  //     setPasswordError("비밀번호는 영문, 숫자, 특수문자(@$!%*#?&)를 포함한 8~20자리여야 합니다.")
+  //     return
+  //   }
+  //   // 비밀번호 확인 검사
+  //   if (password !== confirmPassword) {
+  //     setPasswordError("비밀번호가 일치하지 않습니다.")
+  //     return
+  //   }
+  //   // 비밀번호 확인 일치한 경우
+  //   setPasswordError("") // 에러 메시지 초기화
+  // }
+
+  // 비밀번호 입력 시 핸들러
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value)
+  }
+
+  // 비밀번호 확인 입력 시 핸들러
+  const handleConfirmPasswordChange = (event) => {
+    setConfirmPassword(event.target.value)
+
+    // 비밀번호 확인 일치 여부 체크
+    if (event.target.value !== password) {
+      setPasswordError("비밀번호가 일치하지 않습니다.")
+    } else {
+      setPasswordError("")
     }
   }
 
@@ -93,13 +139,23 @@ function RegisterForm() {
         <TextField
           name="password"
           label="비밀번호"
-          type="password"
+          placeholder="영문, 숫자, 특수문자(@$!%*#?&)를 포함한 8~20자리여야 합니다."
+          type={passwordVisible ? "text" : "password"}
           required
           fullWidth
           autoComplete="password"
           margin="dense"
           value={password}
           onChange={handlePasswordChange}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton onClick={handleClickShowPassword} edge="end">
+                  {passwordVisible ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
         />
         <TextField
           name="confirmPassword"
@@ -109,10 +165,25 @@ function RegisterForm() {
           fullWidth
           value={confirmPassword}
           onChange={handleConfirmPasswordChange}
-          // autoComplete="current-password"
           margin="normal"
+          error={passwordError.length > 0} // 에러 상태인 경우 에러 표시
+          helperText={passwordError} // 에러 메시지 표시
         />
-        <TextField name="call" label="휴대폰 번호" type="text" required fullWidth margin="normal" />
+        <TextField
+          name="call"
+          label="휴대폰 번호"
+          type="text"
+          required
+          fullWidth
+          margin="normal"
+          value={phoneNumber}
+          onChange={handlePhoneNumberChange}
+          inputProps={{
+            maxLength: 11, // 휴대폰 번호는 11자리까지 입력 가능하도록 제한
+            pattern: "[0-9]*", // 숫자만 입력 가능하도록 패턴 설정
+            inputMode: "numeric", // 숫자 입력 모드 설정 (모바일에서 숫자 키패드 노출)
+          }}
+        />
 
         <hr style={{ width: "100%", margin: "30px 0", border: "dashed", borderWidth: ".1px", color: "grey" }} />
 
