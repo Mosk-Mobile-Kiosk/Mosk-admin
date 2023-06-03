@@ -12,10 +12,16 @@ function RegisterForm() {
   const [passwordError, setPasswordError] = useState("")
   const [passwordVisible, setPasswordVisible] = useState(false)
   const [phoneNumber, setPhoneNumber] = useState("")
+  const [storeName, setStoreName] = useState("")
+  const [ownerName, setOwnerName] = useState("")
+  const [address, setAddress] = useState("")
+  const [crn, setCrn] = useState("")
+  const [isCertified, setIsCertified] = useState(false)
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value)
   }
+
   const handleClickShowPassword = () => {
     setPasswordVisible(!passwordVisible)
   }
@@ -69,28 +75,10 @@ function RegisterForm() {
     setPhoneNumber(formattedPhoneNumber)
   }
 
-  // const handleSubmit = () => {
-  //   // 비밀번호 유효성 검사
-  //   const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,20}$/
-  //   if (!passwordRegex.test(password)) {
-  //     setPasswordError("비밀번호는 영문, 숫자, 특수문자(@$!%*#?&)를 포함한 8~20자리여야 합니다.")
-  //     return
-  //   }
-  //   // 비밀번호 확인 검사
-  //   if (password !== confirmPassword) {
-  //     setPasswordError("비밀번호가 일치하지 않습니다.")
-  //     return
-  //   }
-  //   // 비밀번호 확인 일치한 경우
-  //   setPasswordError("") // 에러 메시지 초기화
-  // }
-
-  // 비밀번호 입력 시 핸들러
   const handlePasswordChange = (event) => {
     setPassword(event.target.value)
   }
 
-  // 비밀번호 확인 입력 시 핸들러
   const handleConfirmPasswordChange = (event) => {
     setConfirmPassword(event.target.value)
 
@@ -99,6 +87,77 @@ function RegisterForm() {
       setPasswordError("비밀번호가 일치하지 않습니다.")
     } else {
       setPasswordError("")
+    }
+  }
+
+  const handleStoreNameChange = (event) => {
+    setStoreName(event.target.value)
+  }
+
+  const handleOwnerNameChange = (event) => {
+    setOwnerName(event.target.value)
+  }
+
+  const handleAddressChange = (event) => {
+    setAddress(event.target.value)
+  }
+
+  const handleCrnChange = (event) => {
+    setCrn(event.target.value)
+  }
+
+  const handleCertify = async () => {
+    // 사업자 정보 유효성 검사
+    if (!storeName || !ownerName || !address || !crn) {
+      alert("사업자 정보를 모두 입력해주세요.")
+      return
+    }
+
+    try {
+      const response = await fetch("http://localhost:9090/api/v1/public/stores/certify", {
+        method: "POST",
+        body: JSON.stringify({ storeName, ownerName, address, crn }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+
+      const data = await response.json()
+
+      // 응답 코드에 따라 처리
+      if (response.ok) {
+        setIsCertified(true)
+        console.log("사업자 정보 인증 성공")
+      } else {
+        setIsCertified(false)
+        console.log("사업자 정보 인증 실패")
+      }
+    } catch (error) {
+      console.error("오류 발생:", error)
+    }
+  }
+
+  const handleSubmit = () => {
+    // 비밀번호 유효성 검사
+    const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,20}$/
+    if (!passwordRegex.test(password)) {
+      setPasswordError("비밀번호는 영문, 숫자, 특수문자(@$!%*#?&)를 포함한 8~20자리여야 합니다.")
+      return
+    }
+    // 비밀번호 확인 검사
+    if (password !== confirmPassword) {
+      setPasswordError("비밀번호가 일치하지 않습니다.")
+      return
+    }
+    // 비밀번호 확인 일치한 경우
+    setPasswordError("") // 에러 메시지 초기화
+
+    // 회원가입 완료
+    if (isCertified) {
+      console.log("회원가입 완료!")
+      // navigate("/success")
+    } else {
+      console.log("사업자 정보 인증을 먼저 완료해주세요.")
     }
   }
 
@@ -191,15 +250,65 @@ function RegisterForm() {
           가게 정보 등록
         </Typography>
 
-        <TextField name="storeName" label="가게명" type="text" required fullWidth margin="normal" />
-        <TextField name="ownerName" label="사업주명" type="text" required fullWidth margin="normal" />
-        <TextField name="address" label="주소" type="text" required fullWidth margin="normal" />
-        <TextField name="crn" label="사업자등록번호" type="text" required fullWidth margin="normal" />
+        <TextField
+          name="storeName"
+          label="가게명"
+          type="text"
+          required
+          fullWidth
+          margin="normal"
+          value={storeName}
+          onChange={handleStoreNameChange}
+        />
+        <TextField
+          name="ownerName"
+          label="사업주명"
+          type="text"
+          required
+          fullWidth
+          margin="normal"
+          value={ownerName}
+          onChange={handleOwnerNameChange}
+        />
+        <TextField
+          name="address"
+          label="주소"
+          type="text"
+          required
+          fullWidth
+          margin="normal"
+          value={address}
+          onChange={handleAddressChange}
+        />
+        <TextField
+          name="crn"
+          label="사업자등록번호"
+          type="text"
+          required
+          fullWidth
+          margin="normal"
+          value={crn}
+          onChange={handleCrnChange}
+        />
 
-        <Button type="button" fullWidth variant="contained" sx={{ mt: 1, mb: 2 }} style={{ height: "50px" }}>
+        <Button
+          type="button"
+          fullWidth
+          variant="contained"
+          onClick={handleCertify}
+          sx={{ mt: 1, mb: 2 }}
+          style={{ height: "50px" }}
+        >
           사업자 정보 인증
         </Button>
-        <Button type="button" fullWidth variant="contained" sx={{ mb: 2 }} style={{ height: "50px" }}>
+        <Button
+          type="button"
+          fullWidth
+          variant="contained"
+          onClick={handleSubmit}
+          sx={{ mb: 2 }}
+          style={{ height: "50px" }}
+        >
           가입 완료!
         </Button>
       </Box>
