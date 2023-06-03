@@ -20,7 +20,6 @@ function Router() {
     <Routes>
       <Route path="/" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
-      <Route path="/storeRegister" element={<StorePage />} />
       <Route path=":home/" element={<Home />}>
         <Route index element={<Calendar />} />
         <Route path="dashboard" element={<DashBoard />} />
