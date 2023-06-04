@@ -188,7 +188,7 @@ function RegisterForm() {
       const address = document.getElementsByName("address")[0].value
       const crn = document.getElementsByName("crn")[0].value
 
-      const requestBody = {
+      const storeRegisterRequestBody = {
         email: email,
         password: password,
         storeName: storeName,
@@ -204,7 +204,7 @@ function RegisterForm() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(requestBody),
+          body: JSON.stringify(storeRegisterRequestBody),
         })
 
         const data = response.json()
