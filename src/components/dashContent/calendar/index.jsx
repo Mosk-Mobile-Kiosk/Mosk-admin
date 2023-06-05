@@ -38,7 +38,7 @@ const Calendar = () => {
 
   return (
     <Box m="20px">
-      <Header title="CALENDAR" subtitle="Full Calendar Interactive Page" />
+      <Header title="휴무 관리" />
 
       <Box display="flex" justifyContent="space-between">
         {/* CALENDAR */}
@@ -86,8 +86,8 @@ const Calendar = () => {
             eventClick={handleEventClick}
             eventsSet={(events) => setCurrentEvents(events)}
             initialEvents={[
-              { id: "1234", title: "All-day event", date: "2022-09-14" },
-              { id: "4321", title: "Timed event", date: "2022-09-28" },
+              { id: "1234", title: "프로젝트 최종 발표", date: "2023-06-22" },
+              { id: "4321", title: "종~강~", date: "2023-06-23" },
             ]}
           />
         </Box>
