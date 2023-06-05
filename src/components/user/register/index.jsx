@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Box, Button, Container, Grid, TextField, Typography } from "@mui/material"
 import { IconButton, InputAdornment } from "@mui/material"
 import { Visibility, VisibilityOff } from "@mui/icons-material"
@@ -7,14 +7,15 @@ import { useNavigate } from "react-router-dom"
 function RegisterForm() {
   const navigate = useNavigate()
   const [email, setEmail] = useState("")
+  const [confirmUseEmail, setConfirmUseEmail] = useState(null)
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [passwordError, setPasswordError] = useState("")
   const [passwordVisible, setPasswordVisible] = useState(false)
   const [phoneNumber, setPhoneNumber] = useState("")
-  const [storeName, setStoreName] = useState("")
-  const [ownerName, setOwnerName] = useState("")
   const [address, setAddress] = useState("")
+  const [foundedDate, setFoundedDate] = useState("")
+  const [ownerName, setOwnerName] = useState("")
   const [crn, setCrn] = useState("")
   const [isCertified, setIsCertified] = useState(false)
 
@@ -26,7 +27,7 @@ function RegisterForm() {
     setPasswordVisible(!passwordVisible)
   }
 
-  const handleDuplicateCheck = async () => {
+  const handleConfirmUseEmail = async () => {
     const emailInput = document.getElementsByName("email")[0]
     const email = emailInput.value.trim()
 
@@ -52,27 +53,38 @@ function RegisterForm() {
       // 응답 코드에 따라 처리
       if (response.ok) {
         // 중복되지 않은 이메일인 경우
-        const confirmUseEmail = confirm("사용 가능한 이메일입니다. 사용하시겠습니까?")
-        if (confirmUseEmail) {
-          emailInput.disabled = true // 이메일 입력 칸 비활성화
-          console.log("이메일 사용을 진행합니다.")
-        } else {
-          console.log("이메일 사용을 취소했습니다.")
-        }
+        setConfirmUseEmail(confirm("사용 가능한 이메일입니다. 사용하시겠습니까?"))
       } else {
         // 중복된 이메일인 경우
-        console.log("이미 사용 중인 이메일입니다.")
+        alert("이미 사용 중인 이메일입니다.")
       }
     } catch (error) {
       console.error("오류 발생:", error)
     }
   }
 
+  useEffect(() => {
+    if (confirmUseEmail === null) {
+      return
+    }
+
+    if (confirmUseEmail) {
+      const emailInput = document.getElementsByName("email")[0]
+      emailInput.disabled = true
+    } else {
+      alert("이메일 사용을 취소했습니다.")
+    }
+  }, [confirmUseEmail])
+
   const handlePhoneNumberChange = (event) => {
     // 입력된 값에서 하이픈 제거
     const formattedPhoneNumber = event.target.value.replace(/-/g, "")
     // 휴대폰 번호 업데이트
     setPhoneNumber(formattedPhoneNumber)
+  }
+
+  const handleAddressChange = (event) => {
+    setAddress(event.target.value)
   }
 
   const handlePasswordChange = (event) => {
@@ -90,16 +102,12 @@ function RegisterForm() {
     }
   }
 
-  const handleStoreNameChange = (event) => {
-    setStoreName(event.target.value)
+  const handleFoundedDateChange = (event) => {
+    setFoundedDate(event.target.value)
   }
 
   const handleOwnerNameChange = (event) => {
     setOwnerName(event.target.value)
-  }
-
-  const handleAddressChange = (event) => {
-    setAddress(event.target.value)
   }
 
   const handleCrnChange = (event) => {
@@ -108,29 +116,31 @@ function RegisterForm() {
 
   const handleCertify = async () => {
     // 사업자 정보 유효성 검사
-    if (!storeName || !ownerName || !address || !crn) {
+    if (!foundedDate || !ownerName || !crn) {
       alert("사업자 정보를 모두 입력해주세요.")
       return
     }
 
     try {
-      const response = await fetch("http://localhost:9090/api/v1/public/stores/certify", {
-        method: "POST",
-        body: JSON.stringify({ storeName, ownerName, address, crn }),
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        `http://localhost:9090/api/v1/public/stores/business-registration?foundedDate=${foundedDate}&ownerName=${ownerName}&crn=${crn}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
         },
-      })
+      )
 
       const data = await response.json()
 
       // 응답 코드에 따라 처리
       if (response.ok) {
         setIsCertified(true)
-        console.log("사업자 정보 인증 성공")
+        alert("사업자 정보 인증 성공")
       } else {
         setIsCertified(false)
-        console.log("사업자 정보 인증 실패")
+        alert("사업자 정보 인증 실패")
       }
     } catch (error) {
       console.error("오류 발생:", error)
@@ -138,6 +148,15 @@ function RegisterForm() {
   }
 
   const handleSubmit = () => {
+    const inputBoxs = document.querySelectorAll("input")
+
+    for (const input of inputBoxs) {
+      if (!input.value) {
+        alert(`${input.name}을(를) 입력해주세요.`)
+        return
+      }
+    }
+
     // 비밀번호 유효성 검사
     const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,20}$/
     if (!passwordRegex.test(password)) {
@@ -152,12 +171,55 @@ function RegisterForm() {
     // 비밀번호 확인 일치한 경우
     setPasswordError("") // 에러 메시지 초기화
 
-    // 회원가입 완료
-    if (isCertified) {
-      console.log("회원가입 완료!")
-      // navigate("/success")
-    } else {
-      console.log("사업자 정보 인증을 먼저 완료해주세요.")
+    if (!confirmUseEmail) {
+      alert("이메일 중복확인을 먼저 완료해주세요.")
+      return
+    }
+    if (!isCertified) {
+      alert("사업자 정보 인증을 먼저 완료해주세요.")
+      return
+    }
+    if (isCertified || confirmUseEmail) {
+      const email = document.getElementsByName("email")[0].value
+      const password = document.getElementsByName("password")[0].value
+      const storeName = document.getElementsByName("storeName")[0].value
+      const ownerName = document.getElementsByName("ownerName")[0].value
+      const call = document.getElementsByName("call")[0].value
+      const address = document.getElementsByName("address")[0].value
+      const crn = document.getElementsByName("crn")[0].value
+
+      const storeRegisterRequestBody = {
+        email: email,
+        password: password,
+        storeName: storeName,
+        ownerName: ownerName,
+        call: call,
+        address: address,
+        crn: crn,
+      }
+
+      try {
+        const response = fetch("http://localhost:9090/api/v1/public/stores", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(storeRegisterRequestBody),
+        })
+
+        const data = response.json()
+
+        // 응답 코드에 따라 처리
+        if (response.ok) {
+          setIsCertified(true)
+          alert("회원가입 완료!")
+        } else {
+          setIsCertified(false)
+          alert("회원가입 실패.")
+        }
+      } catch (error) {
+        console.error("오류 발생:", error)
+      }
     }
   }
 
@@ -188,7 +250,7 @@ function RegisterForm() {
               variant="contained"
               sx={{ mt: 2, mb: 2, ml: 1 }}
               style={{ height: "55px" }}
-              onClick={handleDuplicateCheck}
+              onClick={handleConfirmUseEmail}
             >
               중복확인
             </Button>
@@ -243,22 +305,32 @@ function RegisterForm() {
             inputMode: "numeric", // 숫자 입력 모드 설정 (모바일에서 숫자 키패드 노출)
           }}
         />
-
-        <hr style={{ width: "100%", margin: "30px 0", border: "dashed", borderWidth: ".1px", color: "grey" }} />
-
-        <Typography component="h1" variant="h5" mb={1}>
-          가게 정보 등록
-        </Typography>
-
         <TextField
-          name="storeName"
-          label="가게명"
+          name="address"
+          label="주소"
           type="text"
           required
           fullWidth
           margin="normal"
-          value={storeName}
-          onChange={handleStoreNameChange}
+          value={address}
+          onChange={handleAddressChange}
+        />
+
+        <hr style={{ width: "100%", margin: "30px 0", border: "dashed", borderWidth: ".1px", color: "grey" }} />
+
+        <Typography component="h1" variant="h5" mb={1}>
+          사업자정보 인증
+        </Typography>
+
+        <TextField
+          name="storeName"
+          label="창업일"
+          type="text"
+          required
+          fullWidth
+          margin="normal"
+          value={foundedDate}
+          onChange={handleFoundedDateChange}
         />
         <TextField
           name="ownerName"
@@ -270,16 +342,7 @@ function RegisterForm() {
           value={ownerName}
           onChange={handleOwnerNameChange}
         />
-        <TextField
-          name="address"
-          label="주소"
-          type="text"
-          required
-          fullWidth
-          margin="normal"
-          value={address}
-          onChange={handleAddressChange}
-        />
+
         <TextField
           name="crn"
           label="사업자등록번호"
@@ -299,7 +362,7 @@ function RegisterForm() {
           sx={{ mt: 1, mb: 2 }}
           style={{ height: "50px" }}
         >
-          사업자 정보 인증
+          사업자정보 인증 확인
         </Button>
         <Button
           type="button"
