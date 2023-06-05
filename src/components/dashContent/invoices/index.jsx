@@ -1,26 +1,48 @@
+import React, { useState } from "react"
 import { Box, Typography, useTheme } from "@mui/material"
 import { DataGrid, GridToolbar } from "@mui/x-data-grid"
 import { tokens } from "../../../../theme"
 import { mockDataInvoices } from "../../../data/mockData"
 import Header from "../../common/header/Header"
+import { useEffect } from "react"
 
 const Invoices = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
+  const [products, setProducts] = useState([])
+
+  const handleProductsChange = (product) => {
+    setProducts([...products, product])
+  }
+
+  useEffect(() => {
+    fetch("http://localhost:9090/api/v1/products", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("accessToken"),
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json()
+        }
+      })
+      .then((data) => {
+        setProducts(data.data)
+        console.log(data.data)
+      })
+  }, [])
+
   const columns = [
     { field: "id", headerName: "ID" },
     { field: "name", headerName: "Name", flex: 1, cellClassName: "name-column--cell" },
-    { field: "phone", headerName: "Phone Number", flex: 1 },
-    { field: "email", headerName: "Email", flex: 1 },
-    {
-      field: "cost",
-      headerName: "Cost",
-      flex: 1,
-      renderCell: (params) => <Typography color={colors.greenAccent[500]}>${params.row.cost}</Typography>,
-    },
-    { field: "date", headerName: "Date", flex: 1 },
+    { field: "description", headerName: "Description", flex: 1 },
+    { field: "price", headerName: "Price", flex: 1 },
+    { field: "selling", headerName: "Selling", flex: 1 },
   ]
+
   return (
     <Box m="20px">
       <Header title="INVOICES" subtitle="List of Invoices Balances" />
@@ -53,7 +75,7 @@ const Invoices = () => {
           },
         }}
       >
-        <DataGrid checkboxSelection rows={mockDataInvoices} columns={columns} />
+        <DataGrid checkboxSelection rows={products} columns={columns} />
       </Box>
     </Box>
   )
