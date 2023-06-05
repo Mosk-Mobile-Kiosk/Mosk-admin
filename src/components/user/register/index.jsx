@@ -147,7 +147,7 @@ function RegisterForm() {
     }
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const inputBoxs = document.querySelectorAll("input")
 
     for (const input of inputBoxs) {
@@ -199,7 +199,7 @@ function RegisterForm() {
       }
 
       try {
-        const response = fetch("http://localhost:9090/api/v1/public/stores", {
+        const response = await fetch("http://localhost:9090/api/v1/public/stores", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -207,7 +207,7 @@ function RegisterForm() {
           body: JSON.stringify(storeRegisterRequestBody),
         })
 
-        const data = response.json()
+        const data = await response.json()
 
         // 응답 코드에 따라 처리
         if (response.ok) {
