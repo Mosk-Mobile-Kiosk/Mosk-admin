@@ -9,10 +9,14 @@ import {
   DialogActions,
   Button,
   TextField,
+  MenuItem,
+  InputLabel,
+  FormControl,
+  Select,
 } from "@mui/material"
 import { DataGrid, GridToolbar } from "@mui/x-data-grid"
 import { tokens } from "../../../../theme"
-import { mockDataInvoices } from "../../../data/mockData"
+// import { mockDataInvoices } from "../../../data/mockData"
 import Header from "../../common/header/Header"
 import { useEffect } from "react"
 
@@ -22,6 +26,28 @@ const Invoices = () => {
 
   const [products, setProducts] = useState([])
   const [openModal, setOpenModal] = useState(false)
+  const [category, setCategory] = useState("")
+  const [customCategory, setCustomCategory] = useState("")
+
+  const handleCategoryChange = (event) => {
+    const value = event.target.value
+    setCategory(value)
+    if (value === "") {
+      setCustomCategory("") // Reset the custom category input
+    }
+  }
+
+  const handleCustomCategoryChange = (event) => {
+    setCustomCategory(event.target.value)
+  }
+
+  const handleAddCustomCategory = () => {
+    if (customCategory.trim() !== "") {
+      setProducts([...products, { name: customCategory, id: customCategory }]) // 입력한 값을 새로운 옵션으로 추가합니다.
+      setCategory(customCategory)
+      setCustomCategory("")
+    }
+  }
 
   const handleProductsChange = (product) => {
     setProducts([...products, product])
@@ -121,15 +147,33 @@ const Invoices = () => {
         <DialogTitle>메뉴 추가</DialogTitle>
         <DialogContent>
           <Box display="flex" flexDirection="column" gap={2}>
-            <TextField label="카테고리 선택" />
+            <FormControl>
+              <InputLabel id="category-label">카테고리 선택</InputLabel>
+              <Select labelId="category-label" label="카테고리 선택" value={category} onChange={handleCategoryChange}>
+                {category === "" && <MenuItem value="">직접 입력</MenuItem>}
+                {category === "" && (
+                  <MenuItem value={customCategory}>
+                    <TextField
+                      label="직접 입력"
+                      value={customCategory}
+                      onClick={(e) => e.stopPropagation()}
+                      onChange={handleCustomCategoryChange}
+                    />
+                    <Button variant="contained" color="primary" onClick={handleAddCustomCategory}>
+                      추가
+                    </Button>
+                  </MenuItem>
+                )}
+              </Select>
+            </FormControl>
             <TextField label="메뉴 이름" />
+            <TextField label="설명" />
             <TextField label="가격" type="number" />
-            <TextField label="설명" multiline rows={4} />
             <TextField label="옵션 그룹 선택" />
-            <Box display="flex" flexDirection="column" gap={2}>
-              <TextField label="옵션 이름" />
-              <TextField label="가격" type="number" />
-            </Box>
+            <TextField label="메뉴 이름" />
+            <TextField label="설명" />
+            <TextField label="가격" type="number" />
+            <TextField label="옵션 그룹 선택" />
           </Box>
         </DialogContent>
         <DialogActions sx={{ display: "flex", justifyContent: "space-between", margin: "0 15px" }}>
