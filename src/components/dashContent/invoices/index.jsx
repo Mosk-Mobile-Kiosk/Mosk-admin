@@ -13,6 +13,7 @@ import {
   InputLabel,
   FormControl,
   Select,
+  Input,
 } from "@mui/material"
 import { DataGrid, GridToolbar } from "@mui/x-data-grid"
 import { tokens } from "../../../../theme"
@@ -26,31 +27,39 @@ const Invoices = () => {
 
   const [products, setProducts] = useState([])
   const [openModal, setOpenModal] = useState(false)
-  const [category, setCategory] = useState("")
-  const [customCategory, setCustomCategory] = useState("")
-
-  const handleCategoryChange = (event) => {
-    const value = event.target.value
-    setCategory(value)
-    if (value === "") {
-      setCustomCategory("") // Reset the custom category input
-    }
-  }
-
-  const handleCustomCategoryChange = (event) => {
-    setCustomCategory(event.target.value)
-  }
-
-  const handleAddCustomCategory = () => {
-    if (customCategory.trim() !== "") {
-      setProducts([...products, { name: customCategory, id: customCategory }]) // 입력한 값을 새로운 옵션으로 추가합니다.
-      setCategory(customCategory)
-      setCustomCategory("")
-    }
-  }
+  const [categories, setCategories] = useState([])
+  const [selectedCategoryId, setSelectedCategoryId] = useState("")
+  const [name, setName] = useState("")
+  const [description, setDescription] = useState("")
+  const [price, setPrice] = useState("")
+  const [image, setImage] = useState("")
+  const [imageType, setImageType] = useState("")
 
   const handleProductsChange = (product) => {
     setProducts([...products, product])
+  }
+
+  const handleCategoryChange = (event) => {
+    setSelectedCategoryId(event.target.value)
+  }
+
+  const handleNameChange = (event) => {
+    setName(event.target.value)
+  }
+
+  const handleDescription = (event) => {
+    setDescription(event.target.value)
+  }
+
+  const handlePrice = (event) => {
+    setPrice(event.target.value)
+  }
+
+  const handleImage = (event) => {
+    const file = event.target.files[0]
+    setImage(file)
+
+    setImageType(file.name.split(".").pop())
   }
 
   useEffect(() => {
@@ -68,7 +77,6 @@ const Invoices = () => {
       })
       .then((data) => {
         setProducts(data.data)
-        console.log(data.data)
       })
   }, [])
 
@@ -97,10 +105,59 @@ const Invoices = () => {
 
   const handleOpenModal = () => {
     setOpenModal(true)
+    fetch("http://localhost:9090/api/v1/categories", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("accessToken"),
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json()
+        }
+      })
+      .then((data) => {
+        setCategories(data.data)
+      })
   }
 
   const handleCloseModal = () => {
     setOpenModal(false)
+  }
+
+  const submitCreateProduct = () => {
+    const reader = new FileReader()
+
+    reader.onload = () => {
+      const base64Image = reader.result
+
+      const productCreateRequestBody = {
+        categoryId: selectedCategoryId,
+        name: name,
+        description: description,
+        price: price,
+        encodedImg: base64Image,
+        imgType: imageType,
+      }
+      fetch("http://localhost:9090/api/v1/products", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + sessionStorage.getItem("accessToken"),
+        },
+        body: JSON.stringify(productCreateRequestBody),
+      })
+        .then((response) => {
+          return response.json()
+        })
+        .then((data) => {
+          console.log(data)
+          setOpenModal(false)
+        })
+    }
+
+    reader.readAsDataURL(image)
   }
 
   return (
@@ -149,38 +206,44 @@ const Invoices = () => {
           <Box display="flex" flexDirection="column" gap={2}>
             <FormControl>
               <InputLabel id="category-label">카테고리 선택</InputLabel>
-              <Select labelId="category-label" label="카테고리 선택" value={category} onChange={handleCategoryChange}>
-                {category === "" && <MenuItem value="">직접 입력</MenuItem>}
-                {category === "" && (
-                  <MenuItem value={customCategory}>
-                    <TextField
-                      label="직접 입력"
-                      value={customCategory}
-                      onClick={(e) => e.stopPropagation()}
-                      onChange={handleCustomCategoryChange}
-                    />
-                    <Button variant="contained" color="primary" onClick={handleAddCustomCategory}>
-                      추가
-                    </Button>
+              <Select
+                labelId="category-label"
+                label="카테고리 선택"
+                value={categories.length > 0 ? selectedCategoryId : ""}
+                onChange={handleCategoryChange}
+              >
+                {categories.map((category) => (
+                  <MenuItem key={category.id} value={category.id} name="categoryId">
+                    {category.name}
                   </MenuItem>
-                )}
+                ))}
               </Select>
             </FormControl>
-            <TextField label="메뉴 이름" />
-            <TextField label="설명" />
-            <TextField label="가격" type="number" />
-            <TextField label="옵션 그룹 선택" />
-            <TextField label="메뉴 이름" />
-            <TextField label="설명" />
-            <TextField label="가격" type="number" />
-            <TextField label="옵션 그룹 선택" />
+            <TextField label="메뉴 이름" name="name" onChange={handleNameChange} />
+            <TextField label="설명" name="description" onChange={handleDescription} />
+            <TextField label="가격" type="number" name="price" onChange={handlePrice} />
+            <Input
+              id="image-upload"
+              name="image"
+              type="file"
+              inputProps={{
+                accept: "image/*",
+              }}
+              sx={{ display: "none" }}
+              onChange={handleImage}
+            />
+            <label htmlFor="image-upload">
+              <Button variant="outlined" component="span">
+                상품이미지 선택
+              </Button>
+            </label>
           </Box>
         </DialogContent>
         <DialogActions sx={{ display: "flex", justifyContent: "space-between", margin: "0 15px" }}>
           <Button variant="contained" color="primary" onClick={handleCloseModal}>
             취소
           </Button>
-          <Button variant="outlined" color="primary">
+          <Button variant="outlined" color="primary" onClick={submitCreateProduct}>
             등록
           </Button>
         </DialogActions>
