@@ -21,6 +21,22 @@ const Invoices = () => {
     setProducts([...products, product])
   }
 
+  const handleOpenProductRegisterModal = () => {
+    setOpenProductRegisterModal(true)
+    getCategories()
+  }
+
+  const handleOpenProductUpdateModal = (productId) => {
+    setOpenProductUpdateModal(true)
+    getCategories()
+    products.forEach((product) => {
+      if (product.id == productId) {
+        setProduct(product)
+        console.log(product)
+      }
+    })
+  }
+
   useEffect(() => {
     fetch("http://localhost:9090/api/v1/products", {
       method: "GET",
@@ -92,22 +108,6 @@ const Invoices = () => {
       })
   }
 
-  const handleOpenProductRegisterModal = () => {
-    setOpenProductRegisterModal(true)
-    getCategories()
-  }
-
-  const handleOpenProductUpdateModal = (productId) => {
-    setOpenProductUpdateModal(true)
-    getCategories()
-    products.forEach((product) => {
-      if (product.id == productId) {
-        setProduct(product)
-        console.log(product)
-      }
-    })
-  }
-
   const productDeleteRequest = (productId) => {
     const confirmDeleteProduct = confirm("상품을 삭제하시겠습니까?")
 
@@ -131,9 +131,11 @@ const Invoices = () => {
     <Box m="0 20px">
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "end" }}>
         <Header title="Set Menu" />
-        <Button variant="outlined" color="primary" onClick={handleOpenProductRegisterModal} sx={{ height: "40px" }}>
-          메뉴등록
-        </Button>
+        <Box sx={{ display: "flex", gap: "10px" }}>
+          <Button variant="outlined" color="primary" onClick={handleOpenProductRegisterModal} sx={{ height: "40px" }}>
+            메뉴등록
+          </Button>
+        </Box>
       </Box>
       <Box
         // m="40px 0 0 0"

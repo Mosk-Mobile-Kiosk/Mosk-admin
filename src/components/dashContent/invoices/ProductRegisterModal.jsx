@@ -54,6 +54,7 @@ const ProductRegisterModal = ({
 
   const handleCloseModal = () => {
     setOpenProductRegisterModal(false)
+    setImageName("")
   }
 
   const submitCreateProduct = () => {

@@ -71,20 +71,12 @@ const ProductUpdateModal = ({
     setOpenProductUpdateModal(false)
   }
 
-  /*
-  아래 코드가 왜 동작하는지 이유를 모르겠음 내일 확인해 보자(아직 커밋안함)
-  - 상품등록 모달 분리
-  - 상품정보 변경 기능구현 완료
-  */
   const productInfoUpdate = (updatedProduct) => {
-    // 업데이트된 제품 정보를 사용하여 products 배열을 업데이트합니다.
     setProducts((prevProducts) => {
       const updatedProducts = prevProducts.map((product) => {
         if (product.id === updatedProduct.id) {
-          // 해당 id와 일치하는 제품을 업데이트합니다.
           return updatedProduct
         }
-        // 일치하지 않는 제품은 그대로 반환합니다.
         return product
       })
 
