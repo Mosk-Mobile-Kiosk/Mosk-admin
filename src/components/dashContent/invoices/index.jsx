@@ -6,6 +6,7 @@ import Header from "../../common/header/Header"
 import { useEffect } from "react"
 import ProductRegisterModal from "./ProductRegisterModal"
 import ProductUpdateModal from "./ProductUpdateModal"
+import OptionManagerModal from "./OptionManagerModal"
 
 const Invoices = () => {
   const theme = useTheme()
@@ -14,8 +15,10 @@ const Invoices = () => {
   const [products, setProducts] = useState([])
   const [openProductRegisterModal, setOpenProductRegisterModal] = useState(false)
   const [openProductUpdateModal, setOpenProductUpdateModal] = useState(false)
+  const [openOptionManagerModal, setOpenOptionManagerModal] = useState(false)
   const [categories, setCategories] = useState([])
   const [product, setProduct] = useState({})
+  const [optionGroups, setOptionGroups] = useState([])
 
   const handleProductsChange = (product) => {
     setProducts([...products, product])
@@ -35,6 +38,29 @@ const Invoices = () => {
         console.log(product)
       }
     })
+  }
+
+  const handleOpenOptionManagerModal = (productId) => {
+    setOpenOptionManagerModal(true)
+    products.forEach((product) => {
+      if (product.id == productId) {
+        setProduct(product)
+        console.log(product)
+      }
+    })
+    // 프로덕트아이디를 통해 프로덕트 옵션그룹과 그 하위 옵션 가져오기
+    fetch(`http://localhost:9090/api/v1/public/optiongroups/all/${productId}`, {
+      method: "GET",
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json()
+        }
+      })
+      .then((data) => {
+        setOptionGroups(data.data)
+        console.log(data.data)
+      })
   }
 
   useEffect(() => {
@@ -73,16 +99,19 @@ const Invoices = () => {
             variant="outlined"
             color="primary"
             size="small"
+            onClick={(e) => handleOpenOptionManagerModal(params.row.id)}
+          >
+            옵션관리
+          </Button>
+          <Button
+            variant="outlined"
+            color="success"
+            size="small"
             onClick={(e) => handleOpenProductUpdateModal(params.row.id)}
           >
             변경
           </Button>
-          <Button
-            variant="outlined"
-            color="secondary"
-            size="small"
-            onClick={(e) => productDeleteRequest(params.row.id)}
-          >
+          <Button variant="outlined" color="error" size="small" onClick={(e) => productDeleteRequest(params.row.id)}>
             삭제
           </Button>
         </Box>
@@ -112,7 +141,7 @@ const Invoices = () => {
     const confirmDeleteProduct = confirm("상품을 삭제하시겠습니까?")
 
     if (confirmDeleteProduct) {
-      fetch("http://localhost:9090/api/v1/products/" + productId, {
+      fetch(`http://localhost:9090/api/v1/products/${productId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -183,6 +212,13 @@ const Invoices = () => {
         setProducts={setProducts}
         handleProductsChange={handleProductsChange}
         products={products}
+      />
+      <OptionManagerModal
+        openOptionManagerModal={openOptionManagerModal}
+        setOpenOptionManagerModal={setOpenOptionManagerModal}
+        product={product}
+        optionGroups={optionGroups}
+        setOptionGroups={setOptionGroups}
       />
     </Box>
   )
