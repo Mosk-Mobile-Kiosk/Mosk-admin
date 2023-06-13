@@ -88,7 +88,7 @@ const Invoices = () => {
     { field: "name", headerName: "Name", flex: 1, cellClassName: "name-column--cell" },
     { field: "description", headerName: "Description", flex: 1 },
     { field: "price", headerName: "Price", flex: 1 },
-    { field: "selling", headerName: "Selling", flex: 1 },
+    // { field: "selling", headerName: "Selling", flex: 1 },
     {
       field: "actions",
       headerName: "Actions",
@@ -96,6 +96,7 @@ const Invoices = () => {
       renderCell: (params) => (
         <Box display="flex" justifyContent="center">
           <Button
+            // sx={{ m: 1 }}
             variant="outlined"
             color="primary"
             size="small"
@@ -104,6 +105,7 @@ const Invoices = () => {
             옵션관리
           </Button>
           <Button
+            // sx={{ m: 1 }}
             variant="outlined"
             color="success"
             size="small"
@@ -111,7 +113,13 @@ const Invoices = () => {
           >
             변경
           </Button>
-          <Button variant="outlined" color="error" size="small" onClick={(e) => productDeleteRequest(params.row.id)}>
+          <Button
+            // sx={{ m: 1 }}
+            variant="outlined"
+            color="error"
+            size="small"
+            onClick={(e) => productDeleteRequest(params.row.id)}
+          >
             삭제
           </Button>
         </Box>
@@ -150,7 +158,7 @@ const Invoices = () => {
       }).then((response) => {
         if (response.ok) {
           const filterProducts = products.filter((product) => product.id !== productId)
-          setProducts(filterProducts)
+          Products(filterProducts)
         }
       })
     }
@@ -159,9 +167,14 @@ const Invoices = () => {
   return (
     <Box m="0 20px">
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "end" }}>
-        <Header title="Set Menu" />
+        <Header title="메뉴등록" />
         <Box sx={{ display: "flex", gap: "10px" }}>
-          <Button variant="outlined" color="primary" onClick={handleOpenProductRegisterModal} sx={{ height: "40px" }}>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={handleOpenProductRegisterModal}
+            sx={{ height: "40px", marginBottom: "10px" }}
+          >
             메뉴등록
           </Button>
         </Box>

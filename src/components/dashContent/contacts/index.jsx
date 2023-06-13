@@ -152,7 +152,7 @@ const Contacts = () => {
           },
         }}
       >
-        <DataGrid rows={categories} columns={columns} components={{ Toolbar: GridToolbar }} />
+        <DataGrid rows={categories} columns={columns} />
       </Box>
       <CategoryRegisterModal
         categories={categories}
