@@ -11,6 +11,8 @@ import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined"
 import SearchIcon from "@mui/icons-material/Search"
 import QrCode2Icon from "@mui/icons-material/QrCode2"
 import QrCode from "../qrcode"
+import PrintIcon from "@mui/icons-material/Print"
+import CloseIcon from "@mui/icons-material/Close"
 
 const Topbar = () => {
   const theme = useTheme()
@@ -56,6 +58,17 @@ const Topbar = () => {
       <Modal open={isQrCodeModalOpen} onClose={handleQrCodeModalClose}>
         <Box sx={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}>
           <QrCode />
+          <IconButton
+            sx={{
+              position: "absolute",
+              top: "8px",
+              right: "8px",
+              color: theme.palette.grey[500],
+            }}
+            onClick={handleQrCodeModalClose}
+          >
+            <CloseIcon />
+          </IconButton>
         </Box>
       </Modal>
     </Box>

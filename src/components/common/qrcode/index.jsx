@@ -50,10 +50,10 @@ const QrCode = () => {
   }
 
   return (
-    <div>
-      <IconButton onClick={printQRCode} aria-label="Print QR Code">
-        <PrintIcon />
-      </IconButton>
+    <div style={{ backgroundColor: "whitesmoke" }}>
+      {/* <IconButton onClick={printQRCode} aria-label="Print QR Code">
+        <PrintIcon style={{ posi}} />
+      </IconButton> */}
       {/* <button onClick={getQRCode}>Get QR Code</button> */}
       {qrCodeImage && <img src={qrCodeImage} alt="QR Code" />}
     </div>
