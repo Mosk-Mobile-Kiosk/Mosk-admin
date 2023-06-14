@@ -3,8 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { IconButton } from "@mui/material"
 import PrintIcon from "@mui/icons-material/Print"
 
-const Geo = () => {
-  const nav = useNavigate()
+const QrCode = () => {
   const [qrCodeImage, setQRCodeImage] = useState(null)
 
   const getQRCode = () => {
@@ -51,14 +50,14 @@ const Geo = () => {
   }
 
   return (
-    <div>
-      <IconButton onClick={printQRCode} aria-label="Print QR Code">
-        <PrintIcon />
-      </IconButton>
-      <button onClick={getQRCode}>Get QR Code</button>
+    <div style={{ backgroundColor: "whitesmoke" }}>
+      {/* <IconButton onClick={printQRCode} aria-label="Print QR Code">
+        <PrintIcon style={{ posi}} />
+      </IconButton> */}
+      {/* <button onClick={getQRCode}>Get QR Code</button> */}
       {qrCodeImage && <img src={qrCodeImage} alt="QR Code" />}
     </div>
   )
 }
 
-export default Geo
+export default QrCode

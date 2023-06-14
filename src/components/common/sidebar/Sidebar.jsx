@@ -116,19 +116,20 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
             <Typography variant="h6" color={colors.grey[300]} sx={{ m: "15px 0 15px 20px" }}>
-              Data
+              {/* Data */}
             </Typography>
             <Item
-              title="Manage Team"
+              title="정보 수정"
               to="team"
               icon={<PeopleOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
-              title="Contacts"
+              title="카테고리관리"
               to="contacts"
-              icon={<ContactsOutlinedIcon />}
+              // icon={<ContactsOutlinedIcon />}
+              icon={<ReceiptOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
@@ -140,16 +141,16 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
             <Typography variant="h6" color={colors.grey[300]} sx={{ m: "15px 0 15px 20px" }}>
-              Pages
+              {/* Pages */}
             </Typography>
 
-            <Item
+            {/* <Item
               title="정보 수정"
               to="form"
               icon={<PersonOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
-            />
+            /> */}
             <Item
               title="Calendar"
               to="calendar"
@@ -167,7 +168,7 @@ const Sidebar = () => {
             <Typography variant="h6" color={colors.grey[300]} sx={{ m: "15px 0 15px 20px" }}>
               Chart
             </Typography>
-            <Item
+            {/* <Item
               title="Bar Chart"
               to="bar"
               icon={<BarChartOutlinedIcon />}
@@ -175,12 +176,12 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
             <Item
-              title="Pie Chart "
+              title=""
               to="pie"
               icon={<PieChartOutlineOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
-            />
+            /> */}
             <Item
               title="판매량"
               to="line"
@@ -188,13 +189,13 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
-            <Item
+            {/* <Item
               title="Geography Chart"
               to="geo"
               icon={<MapOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
-            />
+            /> */}
           </Box>
         </Menu>
       </ProSidebar>

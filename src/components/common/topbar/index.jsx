@@ -1,6 +1,5 @@
-/* eslint-disable no-unused-vars */
-import React from "react"
-import { Box, IconButton, useTheme } from "@mui/material"
+import React, { useState } from "react"
+import { Box, IconButton, useTheme, Modal } from "@mui/material"
 import { useContext } from "react"
 import { ColorModeContext, tokens } from "../../../../theme"
 import InputBase from "@mui/material/InputBase"
@@ -10,11 +9,25 @@ import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined"
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined"
 import SearchIcon from "@mui/icons-material/Search"
+import QrCode2Icon from "@mui/icons-material/QrCode2"
+import QrCode from "../qrcode"
+import PrintIcon from "@mui/icons-material/Print"
+import CloseIcon from "@mui/icons-material/Close"
 
 const Topbar = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   const colorMode = useContext(ColorModeContext)
+
+  const [isQrCodeModalOpen, setQrCodeModalOpen] = useState(false)
+
+  const handleQrCodeButtonClick = () => {
+    setQrCodeModalOpen(true)
+  }
+
+  const handleQrCodeModalClose = () => {
+    setQrCodeModalOpen(false)
+  }
 
   return (
     <Box display="flex" justifyContent="space-between" p={2}>
@@ -31,15 +44,33 @@ const Topbar = () => {
           {theme.palette.mode === "light" ? <DarkModeOutlinedIcon /> : <LightModeOutlinedIcon />}
         </IconButton>
         <IconButton>
-          <NotificationsOutlinedIcon />
+          <PersonOutlinedIcon />
+        </IconButton>
+        <IconButton onClick={handleQrCodeButtonClick}>
+          <QrCode2Icon />
         </IconButton>
         <IconButton>
           <SettingsOutlinedIcon />
         </IconButton>
-        <IconButton>
-          <PersonOutlinedIcon />
-        </IconButton>
       </Box>
+
+      {/* QR Code Modal */}
+      <Modal open={isQrCodeModalOpen} onClose={handleQrCodeModalClose}>
+        <Box sx={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}>
+          <QrCode />
+          <IconButton
+            sx={{
+              position: "absolute",
+              top: "8px",
+              right: "8px",
+              color: theme.palette.grey[500],
+            }}
+            onClick={handleQrCodeModalClose}
+          >
+            <CloseIcon />
+          </IconButton>
+        </Box>
+      </Modal>
     </Box>
   )
 }
